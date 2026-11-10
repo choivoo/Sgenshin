@@ -1,0 +1,19 @@
+<!doctype html><meta charset=utf-8><body style="background:#567;margin:0"><script src="../js/util.js"></script><script src="../js/data.js"></script><script src="../js/pixel.js"></script>
+<script>
+function add(cv,sc){cv.style.cssText='image-rendering:pixelated;width:'+cv.width*sc+'px;margin:2px;vertical-align:bottom';document.body.appendChild(cv);}
+var t0=performance.now();
+DATA.CHARS.forEach(c=>{add(PX.charCanvas(c.id,26,0,0.3),3);});
+document.body.appendChild(document.createElement('br'));
+var c=DATA.CH.serapin;[0,1,2,3,4].forEach(k=>[0,3,6,8,9,11,12,13,14,15,16].forEach(f=>{var pr=PX.humanoid(c.look,PX.pose(f,c.wt),c.wt);add(PX.toCanvas(PX.render(pr,48,48,k*Math.PI/4,.2,24,24,45),48,48),2);}));
+document.body.appendChild(document.createElement('br'));
+['sl_fire','gob','gob_arch','gob_shield','gob_mage','wolf','wisp','golem','knight','frost_sp','boar','bird'].forEach(id=>{var e=DATA.EN[id];[0,4,5].forEach(f=>add(PX.toCanvas(PX.render(PX.enemyPrims(e.rig,f,0,e.tint),48,48,.5,.2,24,24,45),48,48),2));});
+document.body.appendChild(document.createElement('br'));
+[['boss_root',0],['boss_root',1],['boss_magma',0],['boss_magma',1],['boss_frost',0],['boss_frost',1],['boss_storm',0],['boss_storm',2],['boss_nox',0],['boss_nox',1],['boss_nox',2]].forEach(b=>{[0,2].forEach(f=>add(PX.toCanvas(PX.render(PX.enemyPrims(b[0],f,b[1]),112,104,.4,.2,24,56,100),112,104),2));});
+document.body.appendChild(document.createElement('br'));
+[['tree',0],['tree',1],['pine',0],['dead',1],['palm',0],['bush',0],['bush',3],['rock',0],['grass',0],['flower',0],['flower',1],['mush',0],['herb',1],['fruit',0],['carrot',0],['wheat',0],['ore',0],['ore',1],['chest',0],['chest',1],['chest',2],['chest',3],['chestopen',2],['statue',1],['gate',1],['orb',0],['seelie',0],['pedestal',1],['torch',1],['monu',0],['monu',8],['flag',0],['pot',0],['anvil',0],['bench',0],['board',0],['tent',0],['fire',0],['crate',0],['buoy',0],['crystal',0],['dummy',0]].forEach(p=>add(PX.toCanvas(PX.render(PX.prop(p[0],p[1]),72,84,.4,.25,22,36,80),72,84),2));
+document.body.appendChild(document.createElement('br'));
+add(PX.tiles(),3);
+Object.keys(DATA.ITEMS).slice(0,70).forEach(k=>{var i=DATA.ITEMS[k];add(PX.icon(i.ic,i.col),3)});['neck','ring','brace','ear','crown','el'].forEach(k=>add(PX.icon(k,'#e0a040'),3));
+DATA.WEAPONS.forEach(w=>add(PX.weaponCanvas(w.id,22),2));
+document.title='ms '+(performance.now()-t0|0);
+</script>
