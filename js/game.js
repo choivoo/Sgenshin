@@ -1,7 +1,8 @@
 // 게임 코어: 플레이어 이동(달리기·점프·벽 타기·활공·수영), 카메라, 환경, 효과, 장면 그리기
 var G = { t: 0, dt: 0, mode: 'title', ens: [], projs: [], fields: [], parts: [], nums: [], tele: [], decals: [], slashes: [], bolts: [], fires: [], freeze: 0, shake: 0, inst: null, boss: null, rt: {}, buffs: [], sight: false, photo: false, cine: null, timeScale: 1,
-  inp: { mx: 0, mz: 0, p: {}, h: {} }, cam: { yaw: Math.PI, pitch: .38, dist: 7.5, d: 7.5 }, env: { weather: {}, wT: {}, flash: 0, cur: 'clear' } };
+  inp: { mx: 0, mz: 0, p: {}, h: {} }, cam: { yaw: Math.PI, pitch: .38, dist: 7.5, d: 7.5 }, env: { weather: { meadow: 'clear', town: 'clear' }, wT: { meadow: 100, town: 100 }, flash: 0, cur: 'clear' } };
 var W;
+G.binds = [];
 (function () {
   var D = DATA, P;
   var EC = {}; for (var k in D.EL) EC[k] = U.hex(D.EL[k].c); G.EC = EC;
@@ -34,7 +35,7 @@ var W;
   // ───── 플레이어 ─────
   G.newPlayer = function (x, z) {
     P = G.P = { x: x, y: W.topY(x, z), z: z, vx: 0, vy: 0, vz: 0, yaw: Math.PI, state: 'ground', st: 100, stWait: 0, anim: 'idle', at: 0, combo: 0, atkT: 0, atkPhase: 0, comboT: 0, holdT: 0, ifr: 0, dashT: 0, dashCd: 0, swapCd: 0, shield: null, infuse: null, aura: null, hitT: 0, frozen: 0, fallTop: 0, airT: 0, pushT: 0, wn: null, safe: null, plunge: false, castT: 0, downT: 0, moving: false, lavaT: 0, glideD: 0 };
-    P.safe = { x: P.x, y: P.y, z: P.z };
+    P.safe = { x: P.x, y: P.y, z: P.z }; G.binds.forEach(function (f) { f(P); });
   };
   function solidAt(x, z) { var l = W.decor[(Math.floor(z / 2) >> 4) * 16 + (Math.floor(x / 2) >> 4)]; if (!l) return false; for (var i = 0; i < l.length; i++) { var d = l[i]; if (d.solid && Math.abs(d.x - x) < .45 && Math.abs(d.z - z) < .45) return true; } return false; }
   // 이동 시도. 반환: 0 성공, 1 벽(오를 수 있음), 2 기타 막힘
@@ -193,7 +194,7 @@ var W;
     var c0 = Math.floor(cam.x / 32), c1 = Math.floor(cam.z / 32), fh = Math.hypot(cam.fx, cam.fz) || 1, hx = cam.fx / fh, hz = cam.fz / fh;
     for (var a = -3; a <= 3; a++) for (var b = -3; b <= 3; b++) {
       var cx = c0 + a, cz = c1 + b; if (cx < 0 || cz < 0 || cx > 15 || cz > 15) continue; var l = W.decor[cz * 16 + cx], far = Math.abs(a) > 1 || Math.abs(b) > 1;
-      for (var i = 0; i < l.length; i++) { var d = l[i], dx = d.x - cam.x, dz = d.z - cam.z; if (dx * hx + dz * hz < -3) continue; if (d.g) { if (far) continue; if (W.burnt[d.g] > t) continue; } else if (!d.solid && far && dx * dx + dz * dz > 3600) continue; R.spr(SPR.prop[d.s], d.x, d.y, d.z, { sc: d.sc }); }
+      for (var i = 0; i < l.length; i++) { var d = l[i], dx = d.x - cam.x, dz = d.z - cam.z; if (dx * hx + dz * hz < -3) continue; if (d.g) { if (far) continue; if (W.burnt[d.g] > t) continue; } else if (!d.solid && far && dx * dx + dz * dz > 3600) continue; var o2 = { sc: d.sc }; if (d.solid) { var ex = P.x - cam.x, ez = P.z - cam.z, el2 = ex * ex + ez * ez, kk = (dx * ex + dz * ez) / (el2 || 1); if (kk > -.1 && kk < 1.15 && Math.abs(dx * ez - dz * ex) / Math.sqrt(el2 || 1) < 2.2 * d.sc) o2.a = .3; } R.spr(SPR.prop[d.s], d.x, d.y, d.z, o2); }
     }
     G.drawObjects(t);
     // 얼음 발판·불
@@ -237,7 +238,7 @@ var W;
     for (var i5 = G.bolts.length - 1; i5 >= 0; i5--) { var bt = G.bolts[i5]; bt.life += dtr; if (bt.life > .18) { G.bolts.splice(i5, 1); continue; } for (var q = 0; q < bt.pts.length - 1; q++) { var A = bt.pts[q], B = bt.pts[q + 1]; R.line(A[0], A[1], A[2], B[0], B[1], B[2], bt.w, bt.c[0], bt.c[1], bt.c[2]); R.line(A[0], A[1], A[2], B[0], B[1], B[2], bt.w * .4, 255, 255, 255); } }
     // 날씨 입자
     var wc2 = G.env.cur;
-    if (wc2 == 'rain' || wc2 == 'thunder') for (var r = 0; r < 70; r++) { var rx2 = cam.x + cam.fx * 9 + (U.hash2(r, 1, 3) - .5) * 26, rz2 = cam.z + cam.fz * 9 + (U.hash2(r, 2, 3) - .5) * 26, ry = cam.y + 7 - ((t * 22 + U.hash2(r, 3, 3) * 14) % 14); if (ry > W.ground(rx2, rz2, 99)) R.line(rx2, ry, rz2, rx2 + .1, ry + .7, rz2, .025, 170, 200, 255, .8); }
+    if (wc2 == 'rain' || wc2 == 'thunder') for (var r = 0; r < 70; r++) { var rx2 = cam.x + cam.fx * 9 + (U.hash2(r, 1, 3) - .5) * 26, rz2 = cam.z + cam.fz * 9 + (U.hash2(r, 2, 3) - .5) * 26, ry = cam.y + 7 - ((t * 22 + U.hash2(r, 3, 3) * 14) % 14); if (ry > W.ground(rx2, rz2, 99)) R.line(rx2, ry, rz2, rx2 + .08, ry + .55, rz2, .012, 170, 200, 255, .7); }
     if (wc2 == 'snow') for (var r3 = 0; r3 < 70; r3++) { var sx = cam.x + cam.fx * 8 + (U.hash2(r3, 1, 4) - .5) * 24 + Math.sin(t + r3) * .5, sz = cam.z + cam.fz * 8 + (U.hash2(r3, 2, 4) - .5) * 24, sy = cam.y + 6 - ((t * 2.2 + U.hash2(r3, 3, 4) * 12) % 12); if (sy > W.ground(sx, sz, 99)) R.px(sx, sy, sz, .1, 255, 255, 255, 1, 'flake'); }
     R.frame();
   };

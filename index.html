@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<title>도트리아: 별등 유랑기</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="stage">
+  <canvas id="gl"></canvas>
+  <canvas id="fx"></canvas>
+  <div id="ui">
+    <div id="hud" class="hide">
+      <div id="mmwrap"><canvas id="mm" width="110" height="110"></canvas><div id="mminfo"></div></div>
+      <div id="qt" data-a="open:quests"></div>
+      <div id="topbtn">
+        <button data-a="open:gacha" class="hb g">기원</button><button data-a="open:chars">캐릭터</button><button data-a="open:party">파티</button><button data-a="open:bag">가방</button>
+        <button data-a="open:quests">임무</button><button data-a="open:map">지도</button><button data-a="open:book">모험</button><button data-a="open:menu">메뉴</button>
+      </div>
+      <div id="party"></div>
+      <div id="bossbar" class="hide"><div id="bossname"></div><div class="bar"><i id="bosshp"></i></div><div class="bar thin"><i id="bossar"></i></div><div id="bossweak"></div></div>
+      <div id="timer" class="hide"></div>
+      <div id="buffs"></div>
+      <div id="hpwrap"><div id="hpname"></div><div class="bar" id="hpbar"><i id="hpf"></i><b id="shf"></b><span id="hptxt"></span></div><div class="bar thin" id="stbar"><i id="stf"></i></div></div>
+      <div id="prompt" class="hide" data-btn="interact"><kbd>F</kbd><span></span></div>
+      <div id="loot"></div>
+      <div id="acts">
+        <div class="ab" id="b_sight" data-btn="sight">정령안<small>V</small></div>
+        <div class="ab" id="b_dash" data-btn="dash">대시<small>Shift</small></div>
+        <div class="ab" id="b_jump" data-btn="jump">점프<small>Space</small></div>
+        <div class="ab big" id="b_atk" data-btn="atk">공격</div>
+        <div class="ab" id="b_skill" data-btn="skill"><i class="cd"></i><span>스킬</span><small>E</small></div>
+        <div class="ab" id="b_burst" data-btn="burst"><i class="en"></i><span>필살</span><small>Q</small></div>
+        <div class="ab" id="b_food" data-a="quickfood">음식<small>Z</small></div>
+      </div>
+      <div id="stick"><i></i></div>
+    </div>
+    <div id="screen" class="hide"></div>
+    <div id="dlg" class="hide"><div id="dlgname"></div><div id="dlgtxt"></div><div id="dlgch"></div><div id="dlgnext">▼ 클릭 / F</div><button id="dlgskip" data-a="dlgskip">건너뛰기</button></div>
+    <div id="over"><div id="toasts"></div><div id="banner" class="hide"><b></b><span></span></div><div id="cutin" class="hide"></div><div id="hurt"></div><div id="trans"></div></div>
+    <div id="gachaAnim" class="hide"></div>
+    <div id="title" class="hide"></div>
+    <div id="loading"><div class="logo">도트리아<small>별등 유랑기</small></div><div class="bar"><i id="loadf"></i></div><div id="loadtxt">도트를 한 점씩 찍는 중…</div></div>
+  </div>
+</div>
+<script src="js/util.js"></script>
+<script src="js/data.js"></script>
+<script src="js/data2.js"></script>
+<script src="js/gacha.js"></script>
+<script src="js/pixel.js"></script>
+<script src="js/gl.js"></script>
+<script src="js/world.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/state.js"></script>
+<script src="js/game.js"></script>
+<script src="js/combat.js"></script>
+<script src="js/interact.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/ui2.js"></script>
+<script src="js/auto.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

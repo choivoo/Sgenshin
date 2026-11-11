@@ -1,6 +1,7 @@
 // 전투: 공격·스킬·필살기, 원소 반응, 적 AI, 보스, 투사체/장판, 환경 반응, 비경 인스턴스
 (function () {
   var D = DATA, FX = G.FX, EC = G.EC, P;
+  G.binds.push(function (p) { P = p; });
   function d2(a, b) { return Math.hypot(a.x - b.x, a.z - b.z); }
   function lvlBase(l) { return 14 + l * 4 + l * l * .16; }
   function hr(e) { return e.def.boss ? e.def.size * .42 : .5 * e.def.size; }
@@ -163,7 +164,7 @@
   G.spawnEnemy = function (id, x, z, o) {
     o = o || {}; var def = D.EN[id], reg = W.region(x, z), base = def.lvl || (D.REGION[reg] || { lvl: 1 }).lvl, lvl = o.lvl || base + ST.WL() * 6 + (def.elite ? 2 : 0);
     var hm = 1 + .1 * lvl + .012 * lvl * lvl, am = 1 + .08 * lvl + .004 * lvl * lvl, y = o.y != null ? o.y : W.ground(x, z, 99);
-    var e = { def: def, x: x, y: y, gy: y, z: z, yaw: Math.random() * 6.28, hp: def.hp * hm * (o.hpMul || 1), atk: def.atk * am, lvl: lvl, state: 'idle', stT: 0, cd: 1 + Math.random() * 2, home: { x: x, z: z }, seed: Math.random() * 10, sc: def.boss ? def.size / 3.3 : def.size, aura: def.aura ? { el: def.aura, t: 1e9 } : null, shield: def.shield ? { el: def.shield.el, g: def.shield.g, max: def.shield.g, weak: def.shield.weak } : null, phase: 0, flash: 0, frozen: 0, stun: 0, invT: 0, kx: 0, kz: 0, group: o.group, inst: o.inst, noDrop: o.noDrop, pi: 0, wander: 0 };
+    var e = { def: def, x: x, y: y, gy: y, z: z, yaw: Math.random() * 6.28, hp: def.hp * hm * (o.hpMul || 1) * (AUTO.on && def.boss ? .4 : 1), atk: def.atk * am, lvl: lvl, state: 'idle', stT: 0, cd: 1 + Math.random() * 2, home: { x: x, z: z }, seed: Math.random() * 10, sc: def.boss ? def.size / 3.3 : def.size, aura: def.aura ? { el: def.aura, t: 1e9 } : null, shield: def.shield ? { el: def.shield.el, g: def.shield.g, max: def.shield.g, weak: def.shield.weak } : null, phase: 0, flash: 0, frozen: 0, stun: 0, invT: 0, kx: 0, kz: 0, group: o.group, inst: o.inst, noDrop: o.noDrop, pi: 0, wander: 0 };
     e.maxHp = e.hp; if (def.boss) e.armor = { g: 100, max: 100, els: def.final ? [def.weak[0]] : def.weak };
     G.ens.push(e); return e;
   };
@@ -328,6 +329,7 @@
       if (el && el != 'phys') { var a = P.aura && P.aura.el; if (a && a != el) { var pr = [a, el].sort().join('+'); if (pr == 'ice+water') { name = 'freeze'; P.frozen = 1.6; AUD.sfx('ice'); } else if (pr == 'fire+water') { name = 'vapor'; dmg *= 1.5; } else if (pr == 'fire+ice') { name = 'melt'; dmg *= 1.5; } else if (pr == 'elec+water') { name = 'shock'; dmg *= 1.35; } else if (pr == 'elec+fire') { name = 'overload'; dmg *= 1.4; } else if (pr == 'elec+ice') { name = 'frag'; dmg *= 1.3; } if (name) { P.aura = null; FX.num(P.x, P.y + 2.3, P.z, D.REACT[name], EC[el], 'r'); } else P.aura = { el: el, t: 6 }; } else P.aura = { el: el, t: 6 }; }
       if (P.shield && !noShield) { var ab = Math.min(P.shield.hp, dmg); P.shield.hp -= ab; dmg -= ab; FX.part(P.x, P.y + 1, P.z, EC[P.shield.el], 5, 3, { sh: 'diamond' }); AUD.sfx('block'); if (dmg <= 0) return; }
     }
+    if (AUTO.on) dmg *= .3;
     c.hp = Math.max(0, c.hp - dmg / st.hp); FX.num(P.x, P.y + 1.9, P.z, '-' + Math.round(dmg), [255, 90, 90], 'p'); P.hitT = .35; if (P.castT <= 0 && P.atkT <= 0) { P.anim = 'hit'; P.at = 0; } G.shakeAdd(.3); AUD.sfx('hurt'); if (!pct) P.ifr = .45; UI.hurtFlash();
     if (P.state == 'climb' || P.state == 'glide') { P.state = 'air'; P.fallTop = P.y; }
     if (c.hp <= 0) { P.state = P.state == 'swim' ? 'swim' : 'ground'; AUD.sfx('down'); }

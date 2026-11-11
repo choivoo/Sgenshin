@@ -327,17 +327,17 @@ var PX = (function () {
   }
   // 무기 아이콘용
   function weaponPrims(w) {
-    var pr = [], t = w.type, c = hex(['#b0b8c8', '#b0b8c8', '#b0b8c8', '#a0c8ff', '#ffd070'][w.r - 1]), h = U.hash2(w.id.length, w.id.charCodeAt(4) + w.id.charCodeAt(3), 5), ac = [80 + h * 150 | 0, 80 + ((h * 7) % 1) * 150 | 0, 120 + ((h * 13) % 1) * 130 | 0];
-    if (w.id == 'w_s5x') { c = [255, 120, 90]; ac = [255, 210, 90]; } if (w.id == 'w_k5x') ac = [150, 160, 255];
-    if (t == 'sword') { pr.push(C([0, .35, 0], [0, 1.25, 0], .07, c, { em: w.r == 5 })); pr.push(B([0, .3, 0], [.22, .05, .06], ac, { g: 2 })); pr.push(C([0, .02, 0], [0, .25, 0], .045, [90, 60, 50], { g: 3 })); pr.push(E([0, 0, 0], .07, ac, { g: 2 })); }
-    else if (t == 'claymore') { pr.push(B([0, .82, 0], [.13, .5, .04], c, { em: w.r == 5 })); pr.push(E([0, 1.33, 0], [.13, .12, .04], c, { g: 1 })); pr.push(B([0, .3, 0], [.28, .06, .07], ac, { g: 2 })); pr.push(C([0, 0, 0], [0, .25, 0], .05, [90, 60, 50], { g: 3 })); }
-    else if (t == 'spear') { pr.push(C([0, -.05, 0], [0, 1.05, 0], .035, [120, 85, 55])); pr.push(E([0, 1.22, 0], [.09, .2, .05], c, { g: 2, em: w.r == 5 })); pr.push(E([0, 1.03, 0], .07, ac, { g: 3 })); }
-    else if (t == 'bow') { for (var i = 0; i < 6; i++) { var a = -1.1 + i * .44, a2 = a + .44; pr.push(C([Math.cos(a) * .55 - .3, .65 + Math.sin(a) * .65, 0], [Math.cos(a2) * .55 - .3, .65 + Math.sin(a2) * .65, 0], .05, i == 2 || i == 3 ? ac : c, { g: 1 })); } pr.push(C([-.05, .07, 0], [-.05, 1.23, 0], .015, [230, 230, 230], { g: 2 })); }
-    else { pr.push(B([0, .65, 0], [.36, .46, .09], ac)); pr.push(B([.03, .65, .02], [.33, .42, .08], [245, 240, 225], { g: 2 })); pr.push(B([0, .65, .1], [.36, .46, .02], ac, { g: 3, f: function (x, y) { return Math.abs(x) + Math.abs(y) < .45 ? c : null; } })); }
-    return tiltZ(pr, t == 'book' ? -.15 : -.6);
+    var pr = [], t = w.type, c = hex(['#b0b8c8', '#b0b8c8', '#c4ccd8', '#a8d0ff', '#ffe08a'][w.r - 1]), h = U.hash2(w.id.length, w.id.charCodeAt(4) + w.id.charCodeAt(3), 5), ac = [80 + h * 150 | 0, 80 + ((h * 7) % 1) * 150 | 0, 120 + ((h * 13) % 1) * 130 | 0], grip = [95, 65, 50];
+    if (w.id == 'w_s5x') { c = [255, 120, 90]; ac = [255, 210, 90]; } if (w.id == 'w_k5x') ac = [120, 130, 255];
+    var ux = .53, uy = .85, vx = -.85, vy = .53, ox = -.38, oy = .08, em = w.r == 5;
+    function at(a, b2) { return [ox + ux * a + vx * (b2 || 0), oy + uy * a + vy * (b2 || 0), 0]; }
+    if (t == 'sword') { pr.push(C(at(0), at(.26), .05, grip, { g: 3 })); pr.push(E(at(-.04), .08, ac, { g: 2 })); pr.push(C(at(.3, -.2), at(.3, .2), .055, ac, { g: 2 })); pr.push(C(at(.4), at(1.2), .075, c, { g: 1, em: em })); pr.push(C(at(1.2), at(1.36), .04, lite(c), { g: 1, em: em })); pr.push(C(at(.45), at(1.15), .02, lite(c), { g: 4, em: 1 })); }
+    else if (t == 'claymore') { pr.push(C(at(0), at(.3), .055, grip, { g: 3 })); pr.push(E(at(-.05), .09, ac, { g: 2 })); pr.push(C(at(.34, -.3), at(.34, .3), .07, ac, { g: 2 })); pr.push(C(at(.48, -.07), at(1.25, -.07), .1, c, { g: 1, em: em })); pr.push(C(at(.48, .07), at(1.25, .07), .1, dark(c, .85), { g: 1, em: em })); pr.push(C(at(1.25), at(1.42), .07, c, { g: 1, em: em })); pr.push(C(at(.5), at(1.2), .025, ac, { g: 4 })); }
+    else if (t == 'spear') { pr.push(C(at(-.1), at(1.08), .035, [125, 88, 58], { g: 3 })); pr.push(E(at(1.08), .08, ac, { g: 2 })); pr.push(C(at(1.14), at(1.34), .075, c, { g: 1, em: em })); pr.push(C(at(1.34), at(1.5), .035, lite(c), { g: 1, em: em })); pr.push(C(at(1.0, .05), at(.85, .2), .04, ac, { g: 2 })); }
+    else if (t == 'bow') { for (var i = 0; i < 6; i++) { var a = -1.1 + i * .44, a2 = a + .44; pr.push(C([Math.cos(a) * .55 - .3, .65 + Math.sin(a) * .65, 0], [Math.cos(a2) * .55 - .3, .65 + Math.sin(a2) * .65, 0], i == 2 || i == 3 ? .07 : .05, i == 2 || i == 3 ? ac : c, { g: 1, em: em && !(i == 2 || i == 3) })); } pr.push(C([-.05, .07, 0], [-.05, 1.23, 0], .015, [235, 235, 235], { g: 2 })); pr.push(C([-.05, .65, 0], [.5, .65, 0], .02, [150, 110, 70], { g: 3 })); pr.push(E([.52, .65, 0], [.07, .05, .05], c, { g: 3 })); }
+    else { pr.push(B([0, .65, -.03], [.4, .5, .08], ac, { g: 1 })); pr.push(B([.04, .65, .03], [.36, .45, .06], [245, 240, 225], { g: 2 })); pr.push(B([-.02, .65, .1], [.4, .5, .02], ac, { g: 3, f: function (x, y) { return Math.abs(x) + Math.abs(y) < .42 ? { em: em, c: c } : (Math.abs(x) > .82 || Math.abs(y) > .86) ? dark(ac, .7) : null; } })); pr.push(B([-.38, .65, .04], [.05, .5, .1], dark(ac, .7), { g: 4 })); }
+    return pr;
   }
-  function tiltZ(prims, ang) { var s = Math.sin(ang), c = Math.cos(ang); function rot(v) { var x = v[0], y = v[1] - .65; return [x * c - y * s, .65 + x * s + y * c, v[2]]; } prims.forEach(function (p) { if (p.k == 1) { p.a = rot(p.a); p.b = rot(p.b); } else { p.c = rot(p.c); if (p.k == 2) { p.k = 1; var hy = p.r[1], x = p.c; p.a = [x[0] + s * hy, x[1] - c * hy, x[2]]; p.b = [x[0] - s * hy, x[1] + c * hy, x[2]]; p.r = Math.max(p.r[0], .05); } } }); return prims; }
-
   // ───────── 지형 타일 (32px) ─────────
   var TS = 32;
   function tiles() {
@@ -425,7 +425,7 @@ var PX = (function () {
     var pr = humanoid(c.look, pose(fi || 0, c.wt), c.wt, fi == 16 || fi == 12 ? hex(DATA.EL[c.el].c) : null);
     return cache[k] = toCanvas(render(pr, w, h, yaw == null ? .35 : yaw, .12, S, w / 2, h - S * .12), w, h);
   }
-  function weaponCanvas(id, S) { var k = 'w' + id + S; if (cache[k]) return cache[k]; S = S || 22; var w = Math.round(S * 1.9); return cache[k] = toCanvas(render(weaponPrims(DATA.WP[id]), w, w, .25, .1, S, w / 2, w - S * .28), w, w); }
+  function weaponCanvas(id, S) { var k = 'w' + id + S; if (cache[k]) return cache[k]; S = S || 22; var w = Math.round(S * 1.9); return cache[k] = toCanvas(render(weaponPrims(DATA.WP[id]), w, w, DATA.WP[id].type == 'book' ? .45 : .12, .12, S, w / 2, w - S * .28), w, w); }
   function enemyCanvas(id, S) { var k = 'e' + id + S; if (cache[k]) return cache[k]; var e = DATA.EN[id], big = e.boss, w = Math.round(S * (big ? 4.6 : 2.2)), h = Math.round(S * (big ? 3.9 : 2.2)); return cache[k] = toCanvas(render(enemyPrims(e.rig, 0, 0, e.tint), w, h, .4, .15, S, w / 2, h - S * .15), w, h); }
   return { render: render, humanoid: humanoid, pose: pose, FR: FR, NFR: NFR, enemyPrims: enemyPrims, prop: prop, tiles: tiles, icon: icon, toCanvas: toCanvas, charCanvas: charCanvas, weaponCanvas: weaponCanvas, enemyCanvas: enemyCanvas, hex: hex, lite: lite, dark: dark, E: E, C: C, B: B };
 })();
