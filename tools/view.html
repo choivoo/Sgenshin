@@ -1,0 +1,14 @@
+<!doctype html><meta charset=utf-8><body style="background:#000;margin:0"><canvas id=c style="width:1920px;height:1080px;image-rendering:pixelated"></canvas>
+<script src="../js/util.js"></script><script src="../js/data.js"></script><script src="../js/pixel.js"></script><script src="../js/gl.js"></script><script src="../js/world.js"></script>
+<script>
+var q=new URLSearchParams(location.search);
+R.init(document.getElementById('c'));R.resize(480,270);var t0=performance.now();
+R.bake().then(function(){var W=WORLD.init();R.buildWorld(W);document.title='ready '+(performance.now()-t0|0);
+var px=+q.get('x')||256,pz=+q.get('z')||356,yaw=+q.get('yaw')||3.14,pitch=+q.get('p')||.35,dist=+q.get('d')||9;
+function fr(){var py=W.topY(px,pz);R.env.time=performance.now()/1000;
+R.setCam(px-Math.sin(yaw)*Math.cos(pitch)*dist,py+1.2+Math.sin(pitch)*dist,pz-Math.cos(yaw)*Math.cos(pitch)*dist,yaw,pitch);
+var c0=Math.floor(px/32),c1=Math.floor(pz/32);for(var a=-2;a<=2;a++)for(var b=-2;b<=2;b++){var l=W.decor[(c1+b)*16+c0+a];if(l)l.forEach(function(d){R.spr(SPR.prop[d.s],d.x,d.y,d.z,{sc:d.sc})});}
+R.flat('circle',px,py+.05,pz,.45,0,0,0,.5);R.spr(SPR.ch.serapin[0][4],px,py,pz);
+W.o.npcs.forEach(function(n){R.spr(SPR.ch.miru[0][0],n.x,n.y,n.z)});W.o.chests.forEach(function(n){R.spr(SPR.prop['chest'+n.tier],n.x,n.y,n.z)});W.o.wps.forEach(function(n){R.spr(SPR.prop.gate1,n.x,n.y,n.z,{sc:1.5})});W.statues.forEach(function(n){R.spr(SPR.prop.statue1,n.x,n.y,n.z,{sc:1.6})});
+R.frame();requestAnimationFrame(fr);}fr();});
+</script>
