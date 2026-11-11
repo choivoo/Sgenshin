@@ -329,7 +329,7 @@
       if (el && el != 'phys') { var a = P.aura && P.aura.el; if (a && a != el) { var pr = [a, el].sort().join('+'); if (pr == 'ice+water') { name = 'freeze'; P.frozen = 1.6; AUD.sfx('ice'); } else if (pr == 'fire+water') { name = 'vapor'; dmg *= 1.5; } else if (pr == 'fire+ice') { name = 'melt'; dmg *= 1.5; } else if (pr == 'elec+water') { name = 'shock'; dmg *= 1.35; } else if (pr == 'elec+fire') { name = 'overload'; dmg *= 1.4; } else if (pr == 'elec+ice') { name = 'frag'; dmg *= 1.3; } if (name) { P.aura = null; FX.num(P.x, P.y + 2.3, P.z, D.REACT[name], EC[el], 'r'); } else P.aura = { el: el, t: 6 }; } else P.aura = { el: el, t: 6 }; }
       if (P.shield && !noShield) { var ab = Math.min(P.shield.hp, dmg); P.shield.hp -= ab; dmg -= ab; FX.part(P.x, P.y + 1, P.z, EC[P.shield.el], 5, 3, { sh: 'diamond' }); AUD.sfx('block'); if (dmg <= 0) return; }
     }
-    if (AUTO.on) dmg *= .3;
+    if (AUTO.on) dmg *= .5;
     c.hp = Math.max(0, c.hp - dmg / st.hp); FX.num(P.x, P.y + 1.9, P.z, '-' + Math.round(dmg), [255, 90, 90], 'p'); P.hitT = .35; if (P.castT <= 0 && P.atkT <= 0) { P.anim = 'hit'; P.at = 0; } G.shakeAdd(.3); AUD.sfx('hurt'); if (!pct) P.ifr = .45; UI.hurtFlash();
     if (P.state == 'climb' || P.state == 'glide') { P.state = 'air'; P.fallTop = P.y; }
     if (c.hp <= 0) { P.state = P.state == 'swim' ? 'swim' : 'ground'; AUD.sfx('down'); }

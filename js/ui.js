@@ -142,7 +142,7 @@ var UI = (function () {
     d.innerHTML = '<h1>임무 완료</h1><div style="font-size:44px">[' + q.type + '] ' + q.n + '</div><div class="rw">' + rw.map(function (r) { if (r[0] == 'art') { var a = ST.S.arts[r[1]]; return '<div class="it r' + a.r + '"><img class="px" src="' + T.artIcon(a) + '"><div class="c">장신구</div></div>'; } return '<div class="it r' + ((D.ITEMS[r[0]] || { r: 3 }).r) + '"><img class="px" src="' + T.icon(r[0]) + '"><div class="c">×' + U.fmt(r[1]) + '</div></div>'; }).join('') + '</div><button class="gold" style="font-size:34px;padding:12px 80px">확인</button>';
     E.over.appendChild(d); AUD.sfx('clear'); G.mode = 'menu';
     d.querySelector('button').onclick = function () { if (main && !d.cr) { d.cr = 1; d.innerHTML = '<h1 style="font-size:90px">별이 돌아왔다</h1><div class="credits">도트리아: 별등 유랑기<br><br>기획·그림·소리·프로그램 — 전부 코드 한 줄 한 줄로<br>모든 도트는 한 점씩 계산해 찍었고, 모든 소리는 파형으로 합성했습니다<br><br>여정은 끝나지 않습니다. 비경, 별빛 첨탑, 주간 보스,<br>그리고 아직 만나지 못한 인연이 기다립니다.<br><br>플레이해 주셔서 고맙습니다.</div><button class="gold" style="font-size:34px;padding:12px 80px">여정 계속하기</button>'; d.querySelector('button').onclick = arguments.callee; AUD.music('title'); return; } d.parentNode.removeChild(d); G.mode = 'play'; T.done = true; };
-    if (T.autoDlg) setTimeout(function () { var b = d.querySelector('button'); b && b.click(); }, 4000);
+    if (T.autoDlg) { setTimeout(function () { var b = d.querySelector('button'); b && b.click(); }, 4000); setTimeout(function () { var b = d.querySelector('button'); b && d.parentNode && b.click(); }, 10000); }
   };
   return T;
 })();

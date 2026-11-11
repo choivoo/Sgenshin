@@ -6,8 +6,8 @@ var AUTO = (function () {
   function say(t) { UI.banner('자동 플레이', t); }
   A.setup = function () {
     var S = ST.S; ['serapin', 'lunaria', 'raika', 'yuna', 'miru'].forEach(function (c) { ST.addChar(c); });
-    Object.keys(S.chars).forEach(function (c) { var s = S.chars[c]; s.lv = 80; s.asc = 5; s.tal = [8, 8, 8]; s.en = 40; var w = S.weapons[s.w]; w.lv = 60; w.asc = 3; });
-    var give = { serapin: 'w_s4a', lunaria: 'w_k4a', raika: 'w_k4b', lio: 'w_s4b' }; for (var c in give) { var u = ST.addWeapon(give[c]); S.weapons[u].lv = 70; S.weapons[u].asc = 4; S.chars[c].w = u; }
+    Object.keys(S.chars).forEach(function (c) { var s = S.chars[c]; s.lv = 60; s.asc = 3; s.tal = [5, 5, 5]; s.en = 40; var w = S.weapons[s.w]; w.lv = 50; w.asc = 2; });
+    var give = { serapin: 'w_s4a', lunaria: 'w_k4a', raika: 'w_k4b', lio: 'w_s4b' }; for (var c in give) { var u = ST.addWeapon(give[c]); S.weapons[u].lv = 50; S.weapons[u].asc = 2; S.chars[c].w = u; }
     ['serapin', 'lunaria', 'raika', 'lio'].forEach(function (c, i) { D.SLOTS.forEach(function (sl) { var u = ST.genArt(['ember', 'frost', 'volt', 'glad'][i], 5, sl.id); S.arts[u].lv = 16; S.chars[c].art[sl.id] = u; }); });
     S.party = ['lio', 'serapin', 'lunaria', 'raika']; S.active = 0; S.inv.gem = 1600; S.inv.f_skewer = 9; S.inv.f_omelet = 3; S.q.main = { s: 12, pre: 1 }; S.q.miru = { s: 2, done: true }; S.flags.altar = 1; S.statues.st_meadow = 1; S.clock = 9.5; S.ar = 12;
     W.o.wps.forEach(function (w) { S.wps[w.id] = 1; }); S.party.forEach(function (c) { S.chars[c].hp = 1; }); ST.ver++;
@@ -41,6 +41,8 @@ var AUTO = (function () {
       say('④ 전투 — 교체·원소 반응·필살기'); G.sight = true; await go(camp.x + 4, camp.z + 4, { stop: 5, to: 50 }); G.sight = false;
       await fight(function () { return S.camps.camp0 && !G.ens.some(function (e) { return !e.dead && e.aggro && !e.def.animal; }); }, 70);
       var ch = G.objs.filter(function (o) { return o.k == 'chest' && o.ref.camp == 'camp0'; })[0]; if (ch && !S.opened[ch.ref.id]) { await go(ch.x, ch.z, { stop: 1.6, to: 15 }); G.inp.p.interact = true; mode = 'tap'; await wait(1.5); mode = 'idle'; }
+      say('④ 정예 전투 — 원소 방패 깨기'); var el0 = ['knight', 'gob_mage', 'gob_shield', 'frost_sp'].map(function (m, i) { var a = i * 1.57, e = G.spawnEnemy(m, P.x + Math.cos(a) * 7, P.z + Math.sin(a) * 7, { lvl: 42, noDrop: true }); e.state = 'chase'; e.aggro = true; G.FX.boom(e.x, e.y, e.z, e.def.el || 'phys', 2); return e; });
+      await fight(function () { return el0.every(function (e) { return e.dead; }); }, 80);
       // 5) 장비 강화 시연
       UI.open('chars', { c: 'serapin', t: 'art', sl: 'ring' }); await wait(1.5); UI.acts.aenh('4'); await wait(2); UI.close();
       // 6) 최종 보스

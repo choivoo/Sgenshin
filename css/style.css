@@ -124,7 +124,7 @@ input[type=range]{width:300px;height:30px}
 #gachaAnim .five{position:absolute;inset:0;overflow:hidden}
 #gachaAnim .five .band{position:absolute;left:-10%;right:-10%;top:180px;height:720px;transform:skewY(-5deg);background:linear-gradient(90deg,#7a4a00,#ffc040 40%,#fff3c0 60%,#ffc040);box-shadow:0 -10px 0 #fff,0 10px 0 #fff;animation:fband .5s steps(10)}
 #gachaAnim .five img{position:absolute;right:200px;top:60px;height:1000px;image-rendering:pixelated;filter:drop-shadow(14px 14px 0 rgba(0,0,0,.55));animation:fimg .6s steps(12)}
-#gachaAnim .five .t{position:absolute;left:130px;top:380px;text-shadow:7px 7px 0 #3a2000;animation:ftx .7s steps(14)}#gachaAnim .five .t b{display:block;font-size:120px;letter-spacing:8px}#gachaAnim .five .t span{font-size:44px}#gachaAnim .five .t em{display:block;font-style:normal;font-size:50px;color:#fff3c0;letter-spacing:10px}
+#gachaAnim .five .t{position:absolute;left:130px;top:380px;text-shadow:7px 7px 0 #3a2000;animation:ftx .7s steps(14)}#gachaAnim .five .t b{display:block;font-size:120px;letter-spacing:8px}#gachaAnim .five .t span{font-size:44px;color:#3a1c00;text-shadow:2px 2px 0 #ffe9a0}#gachaAnim .five .t em{display:block;font-style:normal;font-size:50px;color:#fff3c0;letter-spacing:10px}
 @keyframes fband{from{transform:skewY(-5deg) scaleY(0)}}@keyframes fimg{from{transform:translateX(1200px) scale(1.3)}}@keyframes ftx{0%,30%{transform:translateX(-1200px)}}
 #gachaAnim .sum{position:absolute;inset:0;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:18px;padding:120px 150px}
 .gcard{width:136px;height:400px;position:relative;box-shadow:0 0 0 4px #0e0c1c,0 0 0 7px #e8dcb8;text-align:center;font-size:20px;animation:gcin .3s steps(6) backwards}
