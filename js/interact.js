@@ -126,8 +126,8 @@
     var s = S(), q = D.Q[id], st = s.q[id], sp = q.steps[st.s];
     if (sp.take) ST.take(sp.take); if (sp.give) for (var k in sp.give) G.loot(k, sp.give[k]); if (sp.join && !s.chars[sp.join]) { ST.addChar(sp.join); G.toast(D.CH[sp.join].name + '이(가) 파티에 합류했습니다!'); UI.dirty = true; } if (sp.flag) s.flags[sp.flag] = 1; if (sp.flag == 'altar') s.wps.wp_altar = 1;
     if (sp.rw) G.giveRewards(sp.rw); ST.addAR(150); AUD.sfx('quest');
-    st.s++; var fin = st.s >= q.steps.length;
-    var after = function () { if (fin) { st.done = true; st.s = q.steps.length - 1; ST.bump('quests', 1); var rw = G.giveRewards(q.rw); UI.questDone(q, rw); } else { UI.banner('임무 갱신', q.steps[st.s].txt); stepEnter(id); } UI.dirty = true; ST.save(); };
+    st.s++; var fin = st.s >= q.steps.length; if (fin) { st.done = true; st.s = q.steps.length - 1; }
+    var after = function () { if (fin) { ST.bump('quests', 1); var rw = G.giveRewards(q.rw); UI.questDone(q, rw); } else { UI.banner('임무 갱신', q.steps[st.s].txt); stepEnter(id); } UI.dirty = true; ST.save(); };
     if (sp.post) UI.dialog(D.DLG[sp.post], after); else after();
   }
   G.qEvent = function (type, id) { var s = S(); D.QUESTS.forEach(function (q) { var st = s.q[q.id]; if (!st || st.done) return; var sp = q.steps[st.s]; if (sp.t == type && (sp.id == null || sp.id == id)) advance(q.id); }); };
@@ -138,7 +138,7 @@
       if (sp.t == 'reach' && Math.hypot(W.town.x - P.x, W.town.z - P.z) < sp.r) advance(q.id);
       else if (sp.t == 'collect' && ST.cnt(sp.item) >= sp.n) advance(q.id);
       else if (sp.t == 'stat' && (s.stat[sp.k] || 0) >= sp.n) advance(q.id);
-      else if (sp.t == 'statue' && s.statues[sp.id]) advance(q.id); else if (sp.t == 'camp' && s.camps[sp.id]) advance(q.id);
+      else if (sp.t == 'statue' && s.statues[sp.id]) advance(q.id); else if (sp.t == 'boss' && s.flags['dead_' + sp.id] && !G.cine && !G.boss) advance(q.id); else if (sp.t == 'camp' && s.camps[sp.id]) advance(q.id);
     });
   };
   function talk(id) {
@@ -149,9 +149,9 @@
     UI.dialog(D.DLG[id] || [[D.NPC[id].n, '…']], function () { var m = { neri: 'gacha', dora: ['book', 'daily'], smith: 'forge', alch: 'alchemy', shop: ['shop', 'general'], chef: 'cook' }[id]; if (m) { if (Array.isArray(m)) UI.open(m[0], m[1]); else UI.open(m); } });
   }
   G.onCampClear = function (c) { var s = S(); if (!s.camps[c.id]) { s.camps[c.id] = 1; G.toast('야영지 소탕! 잠긴 상자가 열렸습니다'); AUD.sfx('solve'); ST.addAR(60); } G.qEvent('camp', c.id); };
-  G.onBossEngage = function (e) { AUD.music('boss'); UI.banner(e.def.n, '약점 원소: ' + e.armor.els.map(function (x) { return D.EL[x].n; }).join(' · ')); if (!e.inst) G.orbitCine(e.x, e.y + 2, e.z, 2.6, 16, 9, G.cam.yaw + 3.14 - .8, G.cam.yaw + 3.14 + .5, 2, 5, null, 8); AUD.sfx('roar'); };
+  G.onBossEngage = function (e) { if (e.def.final && !S().flags.noxIntro) { S().flags.noxIntro = 1; UI.dialog(D.DLG.nox_intro); } AUD.music('boss'); UI.banner(e.def.n, '약점 원소: ' + e.armor.els.map(function (x) { return D.EL[x].n; }).join(' · ')); if (!e.inst) G.orbitCine(e.x, e.y + 2, e.z, 2.6, 16, 9, G.cam.yaw + 3.14 - .8, G.cam.yaw + 3.14 + .5, 2, 5, null, 8); AUD.sfx('roar'); };
   G.onBossDead = function (e) {
-    var s = S(), id = e.def.id; ST.bump('bosses', 1); AUD.sfx('clear'); G.timeScale = .25; setTimeout(function () { G.timeScale = 1; }, 1400); G.orbitCine(e.x, e.y + 2, e.z, 2.6, 7, 13, G.cam.yaw + 3.14, G.cam.yaw + 3.14 + 2, 3, 7, function () { G.qEvent('boss', id); if (id == 'b_nox') { s.flags.noxDead = 1; ST.bump('nox', 1); } }, 10);
+    var s = S(), id = e.def.id; s.flags['dead_' + id] = 1; ST.bump('bosses', 1); AUD.sfx('clear'); G.timeScale = .25; setTimeout(function () { G.timeScale = 1; }, 1400); G.orbitCine(e.x, e.y + 2, e.z, 2.6, 7, 13, G.cam.yaw + 3.14, G.cam.yaw + 3.14 + 2, 3, 7, function () { G.qEvent('boss', id); if (id == 'b_nox') { s.flags.noxDead = 1; ST.bump('nox', 1); } }, 10);
     for (var i = 0; i < 5; i++) setTimeout(function () { FX.boom(e.x + (Math.random() - .5) * 4, e.y + Math.random() * 3, e.z + (Math.random() - .5) * 4, e.def.el, 3); G.shakeAdd(.5); AUD.sfx('boom'); }, i * 300);
     if (!e.inst) dyn.push({ k: 'bloom', x: e.x, y: e.gy, z: e.z, until: G.t + 240, mat: e.def.mat });
   };

@@ -13,7 +13,8 @@ var AUTO = (function () {
     W.o.wps.forEach(function (w) { S.wps[w.id] = 1; }); S.party.forEach(function (c) { S.chars[c].hp = 1; }); ST.ver++;
   };
   function go(x, z, o) { o = o || {}; nav = { x: x, z: z, stop: o.stop || 1.2, sprint: o.sprint !== false }; mode = 'nav'; stuckT = 0; return until(function () { return !nav; }, o.to || 40).then(function () { nav = null; mode = 'idle'; }); }
-  function fight(done, to) { mode = 'fight'; return until(done, to).then(function () { mode = 'idle'; }); }
+  var focus = null;
+  function fight(done, to, fc) { mode = 'fight'; focus = fc || null; return until(done, to).then(function () { mode = 'idle'; focus = null; }); }
   function findCliff(cx, cz) { // 가까운 4~8m 절벽의 아래쪽 칸
     var best = null, bd = 1e9, N = 256, ci = Math.floor(cx / 2), cj = Math.floor(cz / 2);
     for (var j = cj - 16; j <= cj + 16; j++) for (var i = ci - 16; i <= ci + 16; i++) { var h = W.h[j * N + i]; if (h < 3 || W.wl[j * N + i] > h || W.st[j * N + i]) continue; [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(function (d) { var h2 = W.h[(j + d[1]) * N + i + d[0]], h0 = W.h[(j - d[1]) * N + i - d[0]], h3 = W.h[(j + d[1] * 2) * N + i + d[0] * 2]; if (h2 - h >= 8 && h2 - h <= 18 && Math.abs(h0 - h) <= 1 && Math.abs(h3 - h2) <= 1 && !(W.reg[(j + d[1]) * N + i + d[0]] & 32)) { var dd = Math.hypot(i - ci, j - cj); if (dd < bd && dd > 3) { bd = dd; best = { x: i * 2 + 1, z: j * 2 + 1, d: d, top: h2 * .5 }; } } }); }
@@ -46,7 +47,7 @@ var AUTO = (function () {
       say('⑤ 별의 제단 — 녹스 아스트라'); await wait(1.5); UI.open('map'); await wait(2); UI.close(); UI.teleportTo(W.o.wps.filter(function (w) { return w.id == 'wp_altar'; })[0]); await wait(3.5);
       S.party.forEach(function (c) { S.chars[c].hp = 1; S.chars[c].en = 80; });
       await go(W.altar.x, W.altar.z + 9, { stop: 2, to: 30 });
-      await fight(function () { return S.flags.noxDead; }, 400);
+      await fight(function () { return S.flags.noxDead; }, 400, { x: W.altar.x, z: W.altar.z });
       await until(function () { return UI.done; }, 90); say('시연 끝 — 플레이해 주셔서 고맙습니다'); A.on = false; UI.autoDlg = false; G.inp.mx = G.inp.mz = 0; G.inp.h = {};
     })();
   };
@@ -60,9 +61,11 @@ var AUTO = (function () {
     else if (mode == 'climb') { var d = climbDir, h = Math.atan2(d[0], d[1]); G.cam.yaw += U.angDiff(h, G.cam.yaw) * Math.min(1, dt * 6); inp.mz = 1; if (P.state == 'climb' && P.st > 40 && Math.random() < dt * .8) inp.p.jump = true; }
     else if (mode == 'glide') { var n = note; n.t += dt; var h2 = Math.atan2(n.d[0], n.d[1]); G.cam.yaw += U.angDiff(h2, G.cam.yaw) * Math.min(1, dt * 6); inp.mz = 1; inp.h.dash = P.state == 'ground'; if (P.state == 'ground' && n.t > .5 && !n.j) { var ax = P.x + n.d[0] * 2.2, az = P.z + n.d[1] * 2.2; if (W.ground(ax, az, P.y + .6) < P.y - 2) { inp.p.jump = true; n.j = 1; } } else if (P.state == 'air' && n.j == 1 && P.vy < 2) { inp.p.jump = true; n.j = 2; } }
     else if (mode == 'fight') {
-      var cid = G.cur(), c = D.CH[cid], best = null, bd = 1e9; G.ens.forEach(function (e) { if (e.dead || e.def.animal) return; var d = Math.hypot(e.x - P.x, e.z - P.z); if (d < 45 && d < bd) { bd = d; best = e; } }); inp._want = false;
+      var cid = G.cur(), c = D.CH[cid], best = null, bd = 1e9; G.ens.forEach(function (e) { if (e.dead || e.def.animal || (focus && !e.def.boss && !e.summ)) return; var d = Math.hypot(e.x - P.x, e.z - P.z); if (d < 45 && d < bd) { bd = d; best = e; } }); inp._want = false;
+      if (focus && Math.hypot(P.x - focus.x, P.z - focus.z) > 17) { steer(focus.x, focus.z, dt, true); inp._want = true; if (P.state == 'climb') { inp.mz = 1; inp.mx = 0; } return; }
       // 위험 장판 피하기
       var esc = null; G.tele.forEach(function (t) { if (t.max - t.t > 1.4) return; var dx = P.x - t.x, dz = P.z - t.z, dl = Math.hypot(dx, dz) || 1; if (t.sh == 'c' && dl < t.r + .8) esc = [t.x + dx / dl * (t.r + 4), t.z + dz / dl * (t.r + 4)]; else if (t.sh == 'd' && dl > t.r0 - .8 && dl < t.r + .5) esc = [t.x, t.z]; else if (t.sh == 'l') { var vx = t.x1 - t.x, vz = t.z1 - t.z, k = U.clamp((dx * vx + dz * vz) / (vx * vx + vz * vz), 0, 1), ox = P.x - t.x - vx * k, oz = P.z - t.z - vz * k, ol = Math.hypot(ox, oz) || 1; if (ol < t.hw + .8) esc = [P.x + ox / ol * 6, P.z + oz / ol * 6]; } });
+      if (esc && focus) { var fl = Math.hypot(esc[0] - focus.x, esc[1] - focus.z); if (fl > 15) { esc[0] = focus.x + (esc[0] - focus.x) / fl * 15; esc[1] = focus.z + (esc[1] - focus.z) / fl * 15; } }
       if (esc) { steer(esc[0], esc[1], dt * 3, true); inp.mz = 1; if (P.dashCd <= 0 && P.st > 20) inp.p.dash = true; return; }
       if (!best) return; var rng = (c.wt == 'bow' || c.wt == 'book') ? 7 : 1.7 + (best.def.boss ? best.def.size * .42 : .4);
       if (bd > rng) { inp._want = true; steer(best.x, best.z, dt, bd > 9); } else { var hh = Math.atan2(best.x - P.x, best.z - P.z); G.cam.yaw += U.angDiff(hh, G.cam.yaw) * Math.min(1, dt * 2); }

@@ -164,7 +164,7 @@
   G.spawnEnemy = function (id, x, z, o) {
     o = o || {}; var def = D.EN[id], reg = W.region(x, z), base = def.lvl || (D.REGION[reg] || { lvl: 1 }).lvl, lvl = o.lvl || base + ST.WL() * 6 + (def.elite ? 2 : 0);
     var hm = .7 * (1 + .1 * lvl + .012 * lvl * lvl), am = 1 + .08 * lvl + .004 * lvl * lvl, y = o.y != null ? o.y : W.ground(x, z, 99);
-    var e = { def: def, x: x, y: y, gy: y, z: z, yaw: Math.random() * 6.28, hp: def.hp * hm * (o.hpMul || 1) * (AUTO.on && def.boss ? .4 : 1), atk: def.atk * am, lvl: lvl, state: 'idle', stT: 0, cd: 1 + Math.random() * 2, home: { x: x, z: z }, seed: Math.random() * 10, sc: def.boss ? def.size / 2.2 : def.size, aura: def.aura ? { el: def.aura, t: 1e9 } : null, shield: def.shield ? { el: def.shield.el, g: def.shield.g, max: def.shield.g, weak: def.shield.weak } : null, phase: 0, flash: 0, frozen: 0, stun: 0, invT: 0, kx: 0, kz: 0, group: o.group, inst: o.inst, noDrop: o.noDrop, pi: 0, wander: 0 };
+    var e = { def: def, x: x, y: y, gy: y, z: z, yaw: Math.random() * 6.28, hp: def.hp * hm * (o.hpMul || 1) * (AUTO.on && def.boss ? .8 : 1), atk: def.atk * am, lvl: lvl, state: 'idle', stT: 0, cd: 1 + Math.random() * 2, home: { x: x, z: z }, seed: Math.random() * 10, sc: def.boss ? def.size / 2.2 : def.size, aura: def.aura ? { el: def.aura, t: 1e9 } : null, shield: def.shield ? { el: def.shield.el, g: def.shield.g, max: def.shield.g, weak: def.shield.weak } : null, phase: 0, flash: 0, frozen: 0, stun: 0, invT: 0, kx: 0, kz: 0, group: o.group, inst: o.inst, noDrop: o.noDrop, pi: 0, wander: 0 };
     e.maxHp = e.hp; if (def.boss) e.armor = { g: 100, max: 100, els: def.final ? [def.weak[0]] : def.weak };
     G.ens.push(e); return e;
   };
