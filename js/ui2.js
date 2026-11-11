@@ -78,19 +78,20 @@
       g.fillStyle = '#060512'; g.fillRect(0, 0, 480, 270);
       var gr = g.createLinearGradient(0, 0, 0, 270); gr.addColorStop(0, '#0a0820'); gr.addColorStop(1, rgb(cc, .35)); g.fillStyle = gr; g.fillRect(0, 0, 480, 270);
       var sp = phase == 'meteor' ? 60 + t * 120 : 8; stars.forEach(function (s) { s[1] += dt * sp * (.3 + s[2]); s[0] -= dt * sp * .5 * (.3 + s[2]); if (s[1] > 270) { s[1] = 0; s[0] = Math.random() * 520; } g.fillStyle = s[2] > .7 ? '#fff' : '#8890c0'; var len = phase == 'meteor' ? 1 + Math.floor(t * 3 * s[2]) : 1; g.fillRect(s[0] | 0, s[1] | 0, 1, len); });
+      if (phase == 'meteor' || phase == 'show') { g.fillStyle = '#0c0a1e'; for (var hx2 = 0; hx2 < 480; hx2 += 4) { var hh2 = 22 + Math.sin(hx2 * .021) * 9 + Math.sin(hx2 * .067 + 2) * 5 + (phase == 'meteor' ? t * 6 : 13); g.fillRect(hx2, 270 - hh2, 4, hh2); } g.fillStyle = '#17142e'; g.fillRect(226, 270 - 46 - (phase == 'meteor' ? t * 6 : 13), 5, 30); g.fillRect(249, 270 - 46 - (phase == 'meteor' ? t * 6 : 13), 5, 30); g.fillStyle = rgb(cc, .9); g.fillRect(236, 270 - 44 - (phase == 'meteor' ? t * 6 : 13), 8, 10); }
       if (phase == 'meteor') {
         var k = Math.min(1, t / 2.2), e = k * k, mxp = 470 - e * 230, myp = -20 + e * 150; // 유성: 화면 밖 → 중앙으로 다가오며 커진다(줌)
-        for (var q = 0; q < 26; q++) { var f = q / 26, sz = (2 + e * 10) * (1 - f); g.fillStyle = rgb(cc, 1 - f); g.fillRect((mxp + f * (90 + e * 80)) | 0, (myp - f * (60 + e * 50)) | 0, Math.ceil(sz), Math.ceil(sz)); }
-        g.fillStyle = '#fff'; var hs = 3 + e * 9; g.fillRect((mxp - hs / 2) | 0, (myp - hs / 2) | 0, hs | 0, hs | 0);
+        for (var q = 0; q < 40; q++) { var f = q / 40, sz = (4 + e * 16) * (1 - f); g.fillStyle = rgb(cc, 1 - f); g.fillRect((mxp + f * (130 + e * 120) + Math.sin(q * 1.7 + t * 9) * 3 * f * 4) | 0, (myp - f * (85 + e * 80)) | 0, Math.ceil(sz), Math.ceil(sz)); }
+        g.fillStyle = rgb(cc, .35); g.beginPath(); g.arc(mxp, myp, 10 + e * 26, 0, 6.3); g.fill(); g.fillStyle = '#fff'; var hs = 5 + e * 13; g.fillRect((mxp - hs / 2) | 0, (myp - hs / 2) | 0, hs | 0, hs | 0);
         if (t > 1.25 && t < 1.25 + dt * 1.5 && mx > 3) { AUD.sfx(mx == 5 ? 'star4' : 'reveal'); for (var j = 0; j < 30; j++) parts.push({ x: mxp, y: myp, vx: (Math.random() - .5) * 260, vy: (Math.random() - .5) * 260, l: 0, c: c }); }
         if (t > 2.05) { g.fillStyle = 'rgba(255,255,255,' + Math.min(1, (t - 2.05) * 5) + ')'; g.fillRect(0, 0, 480, 270); } if (t > 2.3) { AUD.sfx('boom'); next(); }
       } else if (phase == 'show' || phase == 'five') {
         var r = res[idx], rays = phase == 'five' ? 24 : 12; g.save(); g.translate(240, 120);
         for (var a = 0; a < rays; a++) { var an = a / rays * 6.283 + t * (phase == 'five' ? .8 : .3); g.fillStyle = rgb(cc, a % 2 ? .28 : .14); g.beginPath(); g.moveTo(0, 0); g.lineTo(Math.cos(an) * 400, Math.sin(an) * 400); g.lineTo(Math.cos(an + .16) * 400, Math.sin(an + .16) * 400); g.fill(); } g.restore();
         if (phase == 'show') { var im = img(r), sc = pt < .18 ? 3 - pt * 8 : 1.5 + Math.sin(t * 2) * .03, w = im.width * sc, h = im.height * sc; g.fillStyle = rgb(cc, .5); g.beginPath(); g.arc(240, 120, 62, 0, 6.3); g.fill(); g.drawImage(im, (240 - w / 2) | 0, (118 - h / 2) | 0, w | 0, h | 0); if (pt < .12) { g.fillStyle = 'rgba(255,255,255,' + (1 - pt * 8) + ')'; g.fillRect(0, 0, 480, 270); } }
-        else if (pt < .25) { g.fillStyle = 'rgba(255,240,200,' + (1 - pt * 4) + ')'; g.fillRect(0, 0, 480, 270); el.style.transform = 'translate(' + ((Math.random() - .5) * 16) + 'px,' + ((Math.random() - .5) * 16) + 'px)'; } else el.style.transform = '';
+        else if (pt < .25) { g.fillStyle = 'rgba(255,240,200,' + (1 - pt * 4) + ')'; g.fillRect(0, 0, 480, 270); cv.style.transform = 'scale(1.04) translate(' + ((Math.random() - .5) * 16) + 'px,' + ((Math.random() - .5) * 16) + 'px)'; } else cv.style.transform = '';
         if (T.autoDlg && pt > (phase == 'five' ? 2.6 : .8)) next();
-      } else { el.style.transform = ''; if (T.autoDlg && pt > 3) { close(); return; } }
+      } else { cv.style.transform = ''; if (T.autoDlg && pt > 3) { close(); return; } }
       for (var p = parts.length - 1; p >= 0; p--) { var pa = parts[p]; pa.l += dt; if (pa.l > .9) { parts.splice(p, 1); continue; } pa.x += pa.vx * dt; pa.y += pa.vy * dt; g.fillStyle = rgb(pa.c, 1 - pa.l); g.fillRect(pa.x | 0, pa.y | 0, 3, 3); }
       requestAnimationFrame(loop);
     })();

@@ -182,7 +182,7 @@ var DATA = (function () {
   D.GACHA_RULE = {
     char: { base5: .006, soft: 73, inc: .06, hard: 90, base4: .051, p4: [.561, 1], feat5: .5, feat4: .5, cons5: 1.6, cons4: 13.0 },
     std: { base5: .006, soft: 73, inc: .06, hard: 90, base4: .051, p4: [.561, 1], feat5: 0, feat4: 0, cons5: 1.6, cons4: 13.0 },
-    weapon: { base5: .007, soft: 62, inc: .07, hard: 80, base4: .06, p4: [.66, .96, 1], feat5: .75, feat4: .75, cons5: 1.85, cons4: 14.5, fateMax: 2 }
+    weapon: { base5: .007, soft: 62, inc: .07, hard: 80, base4: .06, p4: [.66, .96, 1], feat5: .75, feat4: .75, cons5: 1.88, cons4: 14.9, fateMax: 2 }
   };
   D.LIMITED = [
     { id: 'lb1', name: '홍련의 서약', sub: '기간 한정 · 세라핀', f5: ['serapin'], f4: ['haru', 'toram', 'pio'], col: '#ff5a4a' },
@@ -215,9 +215,9 @@ var DATA = (function () {
   it('tk_s', '길잡이 별등', 'lamp', '#7ad8ff', 'cur', 5, '상시 기원에 쓰는 별등.');
   it('glitter', '별가루', 'dust', '#ffd870', 'cur', 5, '4·5성 중복으로 얻는 귀한 가루. 교환 상점에서 쓴다.');
   it('dust', '별먼지', 'dust', '#c0a0ff', 'cur', 4, '3성 기원으로 얻는 먼지. 교환 상점에서 쓴다.');
-  it('xp1', '견습 수첩', 'book', '#80c080', 'mat', 2, '캐릭터 경험치 1,000', { xp: 1000 });
-  it('xp2', '모험 수첩', 'book', '#6090e0', 'mat', 3, '캐릭터 경험치 5,000', { xp: 5000 });
-  it('xp3', '영웅 수첩', 'book', '#c070e0', 'mat', 4, '캐릭터 경험치 20,000', { xp: 20000 });
+  it('xp1', '견습 수첩', 'book', '#80c080', 'mat', 2, '캐릭터 경험치 2,000', { xp: 2000 });
+  it('xp2', '모험 수첩', 'book', '#6090e0', 'mat', 3, '캐릭터 경험치 10,000', { xp: 10000 });
+  it('xp3', '영웅 수첩', 'book', '#c070e0', 'mat', 4, '캐릭터 경험치 40,000', { xp: 40000 });
   it('ore1', '조각 광석', 'ore', '#a0a0b0', 'mat', 1, '무기 경험치 400', { wxp: 400 });
   it('ore2', '정제 광석', 'ore', '#60b0e0', 'mat', 2, '무기 경험치 2,000', { wxp: 2000 });
   it('ore3', '마법 광석', 'ore', '#c080ff', 'mat', 3, '무기 경험치 10,000', { wxp: 10000 });
@@ -302,7 +302,7 @@ var DATA = (function () {
     en('b_magma', '용암 군주 마그라스', 'boss_magma', 6800, 40, 'boss', { size: 3.6, boss: 1, lvl: 22, weak: ['water', 'ice'], el: 'fire', mat: 'b_magma', xp: 500, phases: [1, .5] }),
     en('b_frost', '서리 여왕 글라시아', 'boss_frost', 6200, 38, 'boss', { size: 3.4, boss: 1, lvl: 30, weak: ['fire', 'elec'], el: 'ice', mat: 'b_frost', xp: 500, phases: [1, .5], fly: .5 }),
     en('b_storm', '폭풍의 비룡 템페스타', 'boss_storm', 9000, 46, 'boss', { size: 4.2, boss: 1, lvl: 36, weak: ['ice', 'rock'], el: 'elec', mat: 'w_storm', xp: 800, phases: [1, .6, .3], weekly: 1, fly: .8 }),
-    en('b_nox', '별을 삼킨 자 녹스 아스트라', 'boss_nox', 14000, 50, 'boss', { size: 6, boss: 1, lvl: 40, weak: ['fire', 'ice', 'elec'], el: 'phys', mat: 'starshard', xp: 2000, phases: [1, .66, .33], final: 1 })
+    en('b_nox', '별을 삼킨 자 녹스 아스트라', 'boss_nox', 10000, 50, 'boss', { size: 5.2, boss: 1, lvl: 40, weak: ['fire', 'ice', 'elec'], el: 'phys', mat: 'starshard', xp: 2000, phases: [1, .66, .33], final: 1 })
   ];
   D.EN = {}; D.ENEMIES.forEach(function (e) { D.EN[e.id] = e; });
   D.REGION = {
@@ -314,7 +314,7 @@ var DATA = (function () {
   D.REACT = { vapor: '기화', melt: '해빙', overload: '폭뢰', shock: '누전', freeze: '결빙', frag: '저온방전', burn: '발화', swirl: '소용돌이', cryst: '결정화', bloom: '발아', spark: '활성', shatter: '쇄빙' };
   // 레벨 관련
   D.ASC_CAP = [20, 40, 50, 60, 70, 80, 90];
-  D.charXp = function (l) { return Math.floor(100 + l * l * 14 + l * 60); };
+  D.charXp = function (l) { return Math.floor(80 + l * l * 6 + l * 40); };
   D.wpnXp = function (l, r) { return Math.floor((80 + l * l * 9 + l * 40) * (r == 5 ? 1.5 : r == 4 ? 1.2 : 1)); };
   D.arXp = function (l) { return 300 + l * 180; };
   D.WL_AR = [5, 10, 15, 20, 25, 30];

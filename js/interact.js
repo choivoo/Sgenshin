@@ -32,7 +32,7 @@
   // ───── 그리기 ─────
   G.drawObjects = function (t) {
     var s = S(), sight = G.sight, qt = G.questTarget();
-    if (qt && Math.hypot(qt.x - P.x, qt.z - P.z) > 6) { var qy = W.ground(qt.x, qt.z, 99); R.line(qt.x, qy, qt.z, qt.x, qy + 40, qt.z, .25, 255, 220, 80, .7); R.px(qt.x, qy + 3 + Math.sin(t * 3) * .3, qt.z, .8, 255, 230, 100, 1, 'diamond'); }
+    if (qt && Math.hypot(qt.x - P.x, qt.z - P.z) > 24) { var qy = W.ground(qt.x, qt.z, 99); R.line(qt.x, qy, qt.z, qt.x, qy + 40, qt.z, .25, 255, 220, 80, .7); R.px(qt.x, qy + 3 + Math.sin(t * 3) * .3, qt.z, .8, 255, 230, 100, 1, 'diamond'); }
     s.pins.forEach(function (p) { if (Math.hypot(p[0] - P.x, p[1] - P.z) < 150) { var py = W.ground(p[0], p[1], 99); R.line(p[0], py, p[1], p[0], py + 30, p[1], .18, 120, 220, 255, .6); } });
     for (var i = 0; i < objs.length; i++) {
       var o = objs[i], dx = o.x - P.x, dz = o.z - P.z, d = dx * dx + dz * dz; if (d > 95 * 95) continue; var r = o.ref, k = o.k;

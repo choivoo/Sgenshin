@@ -221,7 +221,7 @@ G.binds = [];
       var frs = SPR.ch[cid], an = P.anim, fi;
       if (an == 'idle') fi = FRM.idle[(P.at * 1.6 | 0) % 2]; else if (an == 'run') fi = FRM.run[(P.at * (P.sprint ? 13 : 9) | 0) % 4]; else if (an == 'climb') fi = FRM.climb[P.climbMove ? (P.at * 5 | 0) % 2 : 0]; else if (an == 'glide') fi = FRM.glide[0]; else if (an == 'swim') fi = FRM.swim[(P.at * 3 | 0) % 2];
       else if (an == 'atk') fi = FRM.atk[Math.min(2, P.atkPhase)]; else if (an == 'hit') fi = FRM.hit[0]; else if (an == 'down') fi = FRM.down[0]; else fi = FRM.cast[0];
-      var po = {}; if (P.ifr > 0 && P.dashT > 0) po.a = .6; if (P.hitT > .2) { po.ar = 160; po.ag = 40; po.ab = 40; } if (P.frozen > 0) { po.r = 90; po.g = 150; po.b = 255; }
+      var po = {}; if (P.ifr > 0 && P.dashT > 0) po.a = .6; if (G.cam.d < 2.4 && !G.cine) po.a = .3; if (P.hitT > .2) { po.ar = 160; po.ag = 40; po.ab = 40; } if (P.frozen > 0) { po.r = 90; po.g = 150; po.b = 255; }
       var py = P.y; if (P.state != 'swim') R.flat('circle', P.x, W.ground(P.x, P.z, P.y + .3) + .06, P.z, .42, 0, 0, 0, .5, 0, true);
       G.sprDir(frs[fi], P.yaw, P.x, py, P.z, po);
       if (P.shield) { var shc = EC[P.shield.el]; R.px(P.x, P.y + .8, P.z, 2.1, shc[0], shc[1], shc[2], .4, 'ring'); }
